@@ -2,45 +2,14 @@
 #include <string.h>
 #include "lualib/lua.hpp"
 #include "util.hpp"
-
-// System sys = System() // The system.
-
-// Lua prototype: utils.loadChunk(string code, string name): function
-int l_utils_loadChunk(lua_State *L) {
-  const char *code = luaL_checkstring(L, 1);
-  const char *name = luaL_checkstring(L, 2);
-  int error = luaL_loadbuffer(L, code, strlen(code), name);
-  return 1
-}
-
-// Usermode protected call. Lua prototype: upcall(function f, number nresults[, number nargs, any arg1, ...]): ...
-int l_upcall(lua_State *L) {
-  //if (sys.kernelMode) {
-    int nresults = luaL_checknumber(L, 2);
-    int nargs = luaL_checknumber(L, 3);
-    //sys.kernelMode = false;
-    lua_pcall(L, nargs, nresults, 0);
-    //sys.kernelMode = true;
-    return nresults;
-  //} else {
-    //lua_pushstring("privilege violation");
-    //lua_error(L);
-  //}
-}
-
-void l_utils_init(lua_State *L) {
-  makeLib_start(L);
-  makeLib_addFunc(L, l_utils_runString, "runString");
-  makeLib_finish(L, "utils");
-  lua_pushcfunction(L, l_upcall);
-  lua_setglobal(L, "upcall");
-}
+#include "misc.hpp"
+//#include "main.hpp"
 
 int main() {
   lua_State *L = luaL_newstate();
   printf("Lua OS; Lua version: %s R%s (modified).\n", LUA_VERSION, LUA_VERSION_RELEASE);
   luaL_openlibs(L);
-  l_utils_init(L);
+  l_misc_init(L);
   lua_close(L);
   return 0;
 }

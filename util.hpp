@@ -1,8 +1,6 @@
 #ifndef util
 #define util
 
-#include "lualib/lua.hpp"
-
 void makeLib_start(lua_State *L);
 void makeLib_finish(lua_State *L, const char *name);
 void makeLib_addFunc(lua_State *L, lua_CFunction func, const char *funcName);
