@@ -5,30 +5,27 @@
 
 // System sys = System() // The system.
 
-// Lua prototype: utils.runString(code, name, nresults)
-int l_utils_runString(lua_State *L) {
+// Lua prototype: utils.loadChunk(string code, string name): function
+int l_utils_loadChunk(lua_State *L) {
   const char *code = luaL_checkstring(L, 1);
   const char *name = luaL_checkstring(L, 2);
-  int nresults = luaL_checknumber(L, 3);
-  int error = luaL_loadbuffer(L, code, strlen(code), name) ||
-    lua_pcall(L, 0, nresults, 0);
-  if (error) {
-    lua_pushboolean(L, false);
-    return 1;
-  }
-  else {
-    return nresults;
-  }
+  int error = luaL_loadbuffer(L, code, strlen(code), name);
+  return 1
 }
 
-// Usermode protected call. Lua prototype: upcall(f, nresults[, nargs, arg1, ...])
+// Usermode protected call. Lua prototype: upcall(function f, number nresults[, number nargs, any arg1, ...]): ...
 int l_upcall(lua_State *L) {
-  int nresults = luaL_checknumber(L, 2);
-  int nargs = luaL_checknumber(L, 3);
-  //sys.kernelMode = false;
-  lua_pcall(L, nargs, nresults, 0);
-  //sys.kernelMode = true;
-  return nresults;
+  //if (sys.kernelMode) {
+    int nresults = luaL_checknumber(L, 2);
+    int nargs = luaL_checknumber(L, 3);
+    //sys.kernelMode = false;
+    lua_pcall(L, nargs, nresults, 0);
+    //sys.kernelMode = true;
+    return nresults;
+  //} else {
+    //lua_pushstring("privilege violation");
+    //lua_error(L);
+  //}
 }
 
 void l_utils_init(lua_State *L) {
