@@ -10,7 +10,7 @@ class System {
   public:
     void *getDevice(int port);
     bool addDevice(int port, void *device);
-    bool removeDevice(int port);
+    bool removeDevice(int port, bool shouldDelete);
     System();
 };
 

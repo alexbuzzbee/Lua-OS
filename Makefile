@@ -1,4 +1,4 @@
-# Makefile for Lua OS.
+# Lua OS makefile for Mac OS X.
 
 MAIN_SOURCES = $(wildcard *.cpp)
 LUA_SOURCES = $(wildcard lualib/*.c)
@@ -10,13 +10,17 @@ OBJECTS = ${MAIN_OBJECTS} ${LUA_OBJECTS}
 
 CC++ = clang++
 CC = clang
+LD = ld
+
+LFLAGS = -lc -lc++ -lcrt1.o -o luaos
+CFLAGS = -c
 
 build: compile
-	ld -lc -lc++ -lcrt1.o ${OBJECTS} -o luaos
+	${LD} ${LFLAGS} ${OBJECTS}
 
 compile: ${SOURCES}
-	${CC++} -c ${MAIN_SOURCES}
-	${CC} -c ${LUA_SOURCES}
+	${CC++} ${CFLAGS} ${MAIN_SOURCES}
+	${CC} ${CFLAGS} ${LUA_SOURCES}
 
 clean:
 	rm *.o
