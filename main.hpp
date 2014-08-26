@@ -1,6 +1,9 @@
-#ifndef main
-#define main
+#ifndef main_hpp
+#define main_hpp
 
-// System sys = System() // The system.
+#include <memory>
+#include "System.hpp"
+
+System *sys; // The system.
 
 #endif

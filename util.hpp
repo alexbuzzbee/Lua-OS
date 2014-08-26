@@ -1,5 +1,5 @@
-#ifndef util
-#define util
+#ifndef util_hpp
+#define util_hpp
 
 void makeLib_start(lua_State *L);
 void makeLib_finish(lua_State *L, const char *name);
