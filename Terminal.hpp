@@ -8,7 +8,6 @@
 class Terminal : public Device {
   protected:
     WINDOW *scr;
-    const char *_type = "terminal";
   public:
     void init();
     void deinit();
@@ -18,6 +17,7 @@ class Terminal : public Device {
     static int di_moveCursor(lua_State *L);
     static int di_setCursorVis(lua_State *L);
     static int di_clear(lua_State *L);
+    Terminal();
 };
 
 #endif

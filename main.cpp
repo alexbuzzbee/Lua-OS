@@ -3,6 +3,8 @@
 #include "lualib/lua.hpp"
 #include "util.hpp"
 #include "main.hpp"
+#include "System.hpp"
+#include "Terminal.hpp"
 
 System *sys;
 

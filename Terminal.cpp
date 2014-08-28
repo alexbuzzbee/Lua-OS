@@ -3,6 +3,10 @@
 #include "util.hpp"
 #include "main.hpp"
 
+Terminal::Terminal() {
+  _type = "terminal";
+}
+
 void Terminal::init() {
   this->scr = initscr();
   cbreak();
