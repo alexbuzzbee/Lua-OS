@@ -12,7 +12,7 @@ CC++ = clang++
 CC = clang
 LD = ld
 
-LFLAGS = -lc -lc++ -lcrt1.o -o luaos
+LFLAGS = -lc -lc++ -lcrt1.o -lncurses -o luaos
 CFLAGS = -c
 
 build: compile

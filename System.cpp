@@ -3,12 +3,13 @@
 
 System::System() : devicesAttached(0) {}
 
-void *System::getDevice(int port) {
+Device *System::getDevice(int port) {
   return this->devices[port];
 }
 
-bool System::addDevice(int port, void *device) {
+bool System::addDevice(int port, Device *device) {
   this->devices[port] = device;
+  this->devicesAttached += 1;
   return true;
 }
 
@@ -18,4 +19,5 @@ bool System::removeDevice(int port, bool shouldDelete) {
   }
   this->devices[port] = NULL;
   this->devicesAttached -= 1;
+  return true;
 }

@@ -4,6 +4,8 @@
 #include "util.hpp"
 #include "main.hpp"
 
+System *sys;
+
 void state_init(lua_State *L) {
   luaL_openlibs(L);
   // Sandboxing: remove loadfile(), print(), dofile(), and collectgarbage().
