@@ -6,32 +6,33 @@
 #include "util.hpp"
 
 int l_hardware_getDevice(lua_State *L) { // Lua proto: hardware.getDevice(port: number): table {port: number, ...}
-  int port = luaL_checknumber(L, 1);
-  Device *dev = sys->getDevice(port);
-  if (dev == NULL) {
-    lua_pushstring(L, "empty port");
+  int port = luaL_checknumber(L, 1); //  Fetch the port.
+  Device *dev = sys->getDevice(port); // Grab the device.
+  if (dev == NULL) { // Means no such device.
+    lua_pushstring(L, "empty port"); // Throw "empty port" error.
     lua_error(L);
+    return 0;
   }
-  dev->getIf(L);
-  lua_pushstring(L, "port");
+  dev->getIf(L); // Get the device interface.
+  lua_pushstring(L, "port"); // Set the "port" field to the interface of the device.
   lua_pushnumber(L, (double)port);
   lua_settable(L, -3);
   return 1;
 }
 
 int l_hardware_getPortsWithType(lua_State *L) { // Lua proto: hardware.getPortsWithType(type: string): table {[1: number, ...]}
-  const char *type = luaL_checkstring(L, 1);
-  lua_newtable(L);
-  int table_index = 0;
-  for (int i = 0; i < DEVICE_PORTS; i++) {
-    Device *dev = sys->getDevice(i);
-    if (dev == NULL) {
-      break;
+  const char *type = luaL_checkstring(L, 1); // Fetch the requested type.
+  lua_newtable(L); // Create a table to hold the return data.
+  int table_index = 0; // Current index of the table.
+  for (int i = 0; i < DEVICE_PORTS; i++) { // Loop through all devices attached to the system.
+    Device *dev = sys->getDevice(i); // Grab the device.
+    if (dev == NULL) { // Means no such device.
+      break; // Break the loop and return the table.
     } else if (dev->type() == type) {
-      lua_pushnumber(L, table_index++);
+      lua_pushnumber(L, ++table_index); // Add the port to the table.
       lua_pushnumber(L, i);
       lua_settable(L, -3);
-    } else {
+    } else { // Next iteration.
       continue;
     }
   }
