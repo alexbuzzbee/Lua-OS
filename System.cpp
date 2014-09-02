@@ -8,12 +8,18 @@ Device *System::getDevice(int port) {
 }
 
 bool System::addDevice(int port, Device *device) {
+  if (device->init() == 1) {
+    return false;
+  }
   this->devices[port] = device;
   this->devicesAttached += 1;
   return true;
 }
 
 bool System::removeDevice(int port, bool shouldDelete) {
+  if (this->devices[port]->deinit() == 1) {
+    return false;
+  }
   if (shouldDelete) {
     delete this->devices[port];
   }

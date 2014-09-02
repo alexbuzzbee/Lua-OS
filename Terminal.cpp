@@ -7,16 +7,18 @@ Terminal::Terminal() {
   _type = "terminal";
 }
 
-void Terminal::init() {
+int Terminal::init() {
   this->scr = initscr();
   cbreak();
   noecho();
   keypad(this->scr, TRUE);
   nodelay(this->scr, FALSE);
+  return 0;
 }
 
-void Terminal::deinit() {
+int Terminal::deinit() {
   endwin();
+  return 0;
 }
 
 void Terminal::getIf(lua_State *L) {
@@ -52,8 +54,8 @@ int Terminal::di_getch(lua_State *L) { // Lua proto: term:getch(): string OR num
 }
 
 int Terminal::di_moveCursor(lua_State *L) { // Lua proto: term:moveCursor(x: number, y: number): number
-  int x = luaL_checknumber(L, 2);
-  int y = luaL_checknumber(L, 3);
+  int x = (int) luaL_checknumber(L, 2);
+  int y = (int) luaL_checknumber(L, 3);
   lua_pushnumber(L, (double)move(y, x));
   refresh();
   return 1;
