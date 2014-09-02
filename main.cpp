@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include "lualib/lua.hpp"
 #include "util.hpp"
@@ -21,7 +22,10 @@ void state_init(lua_State *L) {
   lua_setglobal(L, "collectgarbage");
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  if (argc > 1) {
+    chdir(argv[1]);
+  }
   lua_State *L = luaL_newstate();
   state_init(L);
   sys = new System;

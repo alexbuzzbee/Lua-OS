@@ -6,7 +6,7 @@
 #include "util.hpp"
 
 int l_hardware_getDevice(lua_State *L) { // Lua proto: hardware.getDevice(port: number): table {port: number, ...}
-  int port = luaL_checknumber(L, 1); //  Fetch the port.
+  int port = (int) luaL_checknumber(L, 1); //  Fetch the port.
   Device *dev = sys->getDevice(port); // Grab the device.
   if (dev == NULL) { // Means no such device.
     lua_pushstring(L, "empty port"); // Throw "empty port" error.
