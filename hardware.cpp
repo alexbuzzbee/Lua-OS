@@ -14,8 +14,11 @@ int l_hardware_getDevice(lua_State *L) { // Lua proto: hardware.getDevice(port: 
     return 0;
   }
   dev->getIf(L); // Get the device interface.
-  lua_pushstring(L, "port"); // Set the "port" field to the interface of the device.
+  lua_pushstring(L, "port"); // Set the "port" field to the port of the device.
   lua_pushnumber(L, (double)port);
+  lua_settable(L, -3);
+  lua_pushstring(L, "type"); // Set the "type" field to the type of the device.
+  lua_pushstring(L, dev->type());
   lua_settable(L, -3);
   return 1;
 }
