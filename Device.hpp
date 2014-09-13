@@ -7,7 +7,7 @@ class Device {
   protected:
     const char *_type;
   public:
-    virtual int init() =0;
+    virtual int init(lua_State *C) =0;
     virtual int deinit() =0;
     const char *type();
     virtual void getIf(lua_State *L) =0;

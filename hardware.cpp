@@ -1,7 +1,11 @@
+#include <stdlib.h>
+#include <string.h>
 #include "lualib/lua.hpp"
 #include "hardware.hpp"
 #include "System.hpp"
 #include "Device.hpp"
+#include "Drive.hpp"
+#include "Terminal.hpp"
 #include "main.hpp"
 #include "util.hpp"
 
@@ -42,9 +46,52 @@ int l_hardware_getPortsWithType(lua_State *L) { // Lua proto: hardware.getPortsW
   return 1;
 }
 
+int l_hardware_shutdown(lua_State *L) { // Lua proto: hardware.shutdown(): nil
+  for (int i = 0; i < DEVICE_PORTS; i++) { // Loop through all devices attached to the system.
+    Device *dev = sys->getDevice(i); // Grab the device.
+    if (dev == NULL) { // Means no such device.
+      break; // Break the loop.
+    } else { // Next iteration.
+      sys->removeDevice(i, true);
+    }
+  }
+  exit(0); // Exit the Lua OS application.
+  return 0;
+}
+
+void hardware_create(lua_State *C) { // Creates the hardware representation.
+  sys->init(C);
+  lua_getglobal(C, "devices");
+  lua_pushnil(C);
+  while (lua_next(C, -2) != 0) {
+    int port;
+    const char *type;
+    lua_pushstring(C, "port"); // Get the port for this device.
+    lua_gettable(C, -2);
+    port = (int) lua_tonumber(C, -1);
+    lua_pop(C, 1); // Pop off the port.
+    lua_pushstring(C, "type"); // Get the type for this device.
+    lua_gettable(C, -2);
+    type = lua_tostring(C, -1);
+    lua_pop(C, 1); // Pop off the type.
+    lua_pushstring(C, "config"); // Get the configuration for this device.
+    lua_gettable(C, -2);
+    if (strcmp(type, "drive") == 0/* String compare */) { // Handle device types.
+      sys->addDevice(port, new Drive, C);
+    } else if (strcmp(type, "drive") == 0) {
+      sys->addDevice(port, new Terminal, C);
+    } else {
+      printf("Error: unknown device type %s.\n", type);
+      l_hardware_shutdown(C); // Yes, this is very hacky.
+      exit(1);
+    }
+  }
+}
+
 void hardware_init(lua_State *L) {
   makeLib_start(L);
   makeLib_addFunc(L, l_hardware_getDevice, "getDevice");
   makeLib_addFunc(L, l_hardware_getPortsWithType, "getPortsWithType");
+  makeLib_addFunc(L, l_hardware_shutdown, "shutdown");
   makeLib_finish(L, "hardware");
 }

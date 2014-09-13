@@ -10,8 +10,9 @@ class System {
     Device *devices[DEVICE_PORTS]; // Devices attached to the system.
     int devicesAttached;
   public:
+    bool init(lua_State *C);
     Device *getDevice(int port);
-    bool addDevice(int port, Device *device);
+    bool addDevice(int port, Device *device, lua_State *C);
     bool removeDevice(int port, bool shouldDelete);
     System();
 };

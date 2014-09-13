@@ -6,14 +6,14 @@
 class Drive : public Device {
   public:
     const char *name;
-    int init();
+    int init(lua_State *C);
     int deinit();
     void getIf(lua_State *L);
     static int di_load(lua_State *L);
     static int di_save(lua_State *L);
     static int di_delete(lua_State *L);
     static int di_eraseDrive(lua_State *L);
-    Drive(const char *name);
+    Drive();
 };
 
 #endif

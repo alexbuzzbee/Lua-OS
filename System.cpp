@@ -3,12 +3,16 @@
 
 System::System() : devicesAttached(0) {}
 
+bool System::init(lua_State *C) {
+  return true;
+}
+
 Device *System::getDevice(int port) {
   return this->devices[port];
 }
 
-bool System::addDevice(int port, Device *device) {
-  if (device->init() == 1) {
+bool System::addDevice(int port, Device *device, lua_State *C) {
+  if (device->init(C) == 1) {
     return false;
   }
   this->devices[port] = device;

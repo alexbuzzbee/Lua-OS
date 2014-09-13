@@ -9,7 +9,7 @@ class Terminal : public Device {
   protected:
     WINDOW *scr;
   public:
-    int init();
+    int init(lua_State *C);
     int deinit();
     void getIf(lua_State *L);
     static int di_putstr(lua_State *L);
