@@ -74,7 +74,7 @@ char *util_loadFile(const char *path) {
       return NULL;
     }
     part[bytesRead] = '\0'; // Add a zero to the end.
-    strcpy(buff, part); // Append part to buffer.
+    strcat(buff, part); // Append part to buffer.
   } while (bytesRead != 0);
   free(part);
   close(f);
