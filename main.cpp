@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include "lualib/lua.hpp"
@@ -6,12 +7,12 @@
 #include "main.hpp"
 #include "hardware.hpp"
 #include "System.hpp"
-#include "Terminal.hpp"
 
 System *sys;
 
 void state_init(lua_State *L) {
   luaL_openlibs(L);
+  hardware_init(L);
   // Sandboxing: remove loadfile(), print(), dofile(), and collectgarbage().
   lua_pushnil(L);
   lua_setglobal(L, "loadfile");
@@ -28,12 +29,32 @@ int main(int argc, char *argv[]) {
     chdir(argv[1]);
   }
   lua_State *L = luaL_newstate();
-  lua_State *C = luaL_newstate(); // Configuration lua state.
-  state_init(L);
+  if (L == NULL) {
+    printf("Error: Allocating main lua state failed!\n");
+    exit(1);
+  }
+  char *firm;
+  size_t firmlen;
   sys = new System;
-  hardware_create(C);
-  lua_close(C);
-  printf("Lua OS; Lua version: %s R%s (modified).\n", LUA_VERSION, LUA_VERSION_RELEASE);
+  hardware_create();
+  printf("Loading firmware...\n");
+  state_init(L); // Initialize L.
+  firm = util_loadFile("firmware.lua"); // Load firmware.
+  if (conf == NULL) { // Handle load errors.
+    printf("Error: failed to load file firmware.lua\n");
+    lua_close(L);
+    exit(1);
+  }
+  firmlen = strlen(firm);
+  if (luaL_loadbuffer(L, firm, firmlen, "firmware") != 0) {
+    printf("Error: failed to parse system firmware.\n");
+    lua_close(L);
+    free(firm);
+    exit(1);
+  }
+  free(firm);
+  printf("Lua OS; Lua version: %s R%s (modified).\n", LUA_VERSION, LUA_VERSION_RELEASE); // Display heading.
+  lua_pcall(L, 0, 0, 0); // Run firmware.
   lua_close(L);
   return 0;
 }

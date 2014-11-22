@@ -6,7 +6,7 @@
 class Drive : public Device {
   public:
     const char *name;
-    int init(lua_State *C);
+    int init(Setting &sett);
     int deinit();
     void getIf(lua_State *L);
     static int di_load(lua_State *L);

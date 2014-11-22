@@ -35,11 +35,8 @@ void Drive::getIf(lua_State *L) {
   makeLib_addFunc(L, Drive::di_eraseDrive, "eraseDrive");
 }
 
-int Drive::init(lua_State *C) {
-  lua_pushstring(C, "name");
-  lua_gettable(C, -2);
-  this->name = lua_tostring(C, -1);
-  lua_pop(C, 2); // Pop the string and table off the stack.
+int Drive::init(Setting &sett) {
+  this.name = sett.lookup("name");
   return 0;
 }
 

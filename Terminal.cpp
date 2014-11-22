@@ -7,13 +7,12 @@ Terminal::Terminal() {
   _type = "terminal";
 }
 
-int Terminal::init(lua_State *C) {
+int Terminal::init(Setting &sett) {
   this->scr = initscr();
   cbreak();
   noecho();
   keypad(this->scr, TRUE);
   nodelay(this->scr, FALSE);
-  lua_pop(C, 1); // Pop the config table off the stack.
   return 0;
 }
 
