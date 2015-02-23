@@ -1,12 +1,13 @@
 #ifndef Drive_hpp
 #define Drive_hpp
 
+#include <libconfig.h++>
 #include "Device.hpp"
 
 class Drive : public Device {
   public:
     const char *name;
-    int init(Setting &sett);
+    int init(libconfig::Setting &sett);
     int deinit();
     void getIf(lua_State *L);
     static int di_load(lua_State *L);

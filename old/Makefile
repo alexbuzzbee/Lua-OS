@@ -12,7 +12,7 @@ CC++ = clang++
 CC = clang
 LD = ld
 
-LFLAGS = -lc -lc++ -lcrt1.o -lncurses -lconfig -o luaos -macosx_version_min 10.8
+LFLAGS = -lc -lc++ -lcrt1.o -lncurses -lconfig++ -o luaos -macosx_version_min 10.8
 CFLAGS = -c
 
 build: compile

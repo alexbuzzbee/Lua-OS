@@ -7,12 +7,14 @@ Terminal::Terminal() {
   _type = "terminal";
 }
 
-int Terminal::init(Setting &sett) {
+int Terminal::init(libconfig::Setting &sett) {
   this->scr = initscr();
   cbreak();
   noecho();
   keypad(this->scr, TRUE);
   nodelay(this->scr, FALSE);
+  erase();
+  refresh();
   return 0;
 }
 
@@ -37,9 +39,9 @@ int Terminal::di_putstr(lua_State *L) { // Lua proto: term:putstr(str: string): 
   return 0;
 }
 
-int Terminal::di_getch(lua_State *L) { // Lua proto: term:getch(): string OR number OR nil
+int Terminal::di_getch(lua_State *L) { // Lua proto: term:getch(): string OR number OR nil | WARNING: freezes system!
   int c = getch(); // Grab character.
-  if (c == 27 || c == KEY_BACKSPACE || c == KEY_DC || c == KEY_UP || c == KEY_DOWN || c == KEY_LEFT || c == KEY_RIGHT || c == KEY_ENTER) { // Key is recognized special character.
+  if (c == 27 /* ESC */ || c == KEY_BACKSPACE || c == KEY_DC || c == KEY_UP || c == KEY_DOWN || c == KEY_LEFT || c == KEY_RIGHT || c == KEY_ENTER) { // Key is recognized special character.
     lua_pushnumber(L, (double)c); // Return the key number.
     return 1;
   } else if (c < KEY_MIN) { // Key is ASCII.

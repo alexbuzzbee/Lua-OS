@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <libconfig.h++>
 #include "lualib/lua.hpp"
 #include "hardware.hpp"
 #include "System.hpp"
@@ -51,6 +52,11 @@ int l_hardware_shutdown(lua_State *L) { // Lua proto: hardware.shutdown(): nil
   return 0;
 }
 
+int l_hardware_gettime(lua_State *L) {
+  lua_pushnumber(L, time(null));
+  return 1;
+}
+
 void hardware_doshutdown() {
   for (int i = 0; i < DEVICE_PORTS; i++) { // Loop through all devices attached to the system.
     Device *dev = sys->getDevice(i); // Grab the device.
@@ -65,16 +71,18 @@ void hardware_doshutdown() {
 
 void hardware_create() { // Creates the hardware representation.
   sys->init();
-  Config *cfg = new Config();
+  libconfig::Config *cfg = new libconfig::Config();
   cfg->readFile("luaos.cfg");
-  Setting *sett = cfg->lookup("devices");
-  size_t lsett = sett->getLength();
+  libconfig::Setting &sett = cfg->lookup("devices");
+  size_t lsett = sett.getLength();
   for (int i = 0; i < lsett; i++) {
-    const char *type = sett[i]->lookup("type");
+    const char *type = sett[i]["type"];
     if (strcmp(type, "drive") == 0) {
-      sys->addDevice(sett[i]->lookup("port"), new Drive(), sett[i]->lookup("conf"))
-    } elseif (strcmp(type, "terminal") == 0) {
-      sys->addDevice(sett[i]->lookup("port"), new Terminal(), sett[i]->lookup("conf"))
+      sys->addDevice(sett[i]["port"], new Drive(), sett[i]["conf"]);
+    } else if (strcmp(type, "terminal") == 0) {
+      sys->addDevice(sett[i]["port"], new Terminal(), sett[i]["conf"]);
+    } else {
+      printf("WARNING: bad device type '%s'\n", type);
     }
   }
 }

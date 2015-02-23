@@ -11,7 +11,7 @@ Device *System::getDevice(int port) {
   return this->devices[port];
 }
 
-bool System::addDevice(int port, Device *device, Setting &sett) {
+bool System::addDevice(int port, Device *device, libconfig::Setting &sett) {
   if (device->init(sett) == 1) {
     return false;
   }

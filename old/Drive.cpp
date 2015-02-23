@@ -35,8 +35,8 @@ void Drive::getIf(lua_State *L) {
   makeLib_addFunc(L, Drive::di_eraseDrive, "eraseDrive");
 }
 
-int Drive::init(Setting &sett) {
-  this.name = sett.lookup("name");
+int Drive::init(libconfig::Setting &sett) {
+  this->name = sett["name"];
   return 0;
 }
 

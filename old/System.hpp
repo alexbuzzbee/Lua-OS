@@ -13,7 +13,7 @@ class System {
   public:
     bool init();
     Device *getDevice(int port);
-    bool addDevice(int port, Device *device, Setting &sett);
+    bool addDevice(int port, Device *device, libconfig::Setting &sett);
     bool removeDevice(int port, bool shouldDelete);
     System();
 };

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <curses.h>
 #include "lualib/lua.hpp"
 #include "util.hpp"
 #include "main.hpp"
@@ -36,24 +37,30 @@ int main(int argc, char *argv[]) {
   char *firm;
   size_t firmlen;
   sys = new System;
-  hardware_create();
   printf("Loading firmware...\n");
+  refresh();
   state_init(L); // Initialize L.
   firm = util_loadFile("firmware.lua"); // Load firmware.
-  if (conf == NULL) { // Handle load errors.
+  if (firm == NULL) { // Handle load errors.
     printf("Error: failed to load file firmware.lua\n");
+    refresh();
+    hardware_doshutdown();
     lua_close(L);
     exit(1);
   }
   firmlen = strlen(firm);
   if (luaL_loadbuffer(L, firm, firmlen, "firmware") != 0) {
     printf("Error: failed to parse system firmware.\n");
+    refresh();
+    hardware_doshutdown();
     lua_close(L);
     free(firm);
     exit(1);
   }
   free(firm);
-  printf("Lua OS; Lua version: %s R%s (modified).\n", LUA_VERSION, LUA_VERSION_RELEASE); // Display heading.
+  printf("Lua OS; Lua version: %s R%s (modified).\n\r", LUA_VERSION, LUA_VERSION_RELEASE); // Display heading.
+  refresh();
+  hardware_create();
   lua_pcall(L, 0, 0, 0); // Run firmware.
   lua_close(L);
   return 0;
