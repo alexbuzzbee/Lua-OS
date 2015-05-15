@@ -118,7 +118,7 @@ function serial.serialize(value, pretty)
 end
 
 function serial.unserialize(data)
-  checkArg(1, data, "string")
+  assert(type(data) == "string", "Error: cannot deserialize non-string")
   local result, reason = load("return " .. data, "=data", _, {math={huge=math.huge}})
   if not result then
     return nil, reason

@@ -7,7 +7,7 @@ function util.chdir(newDir)
 end
 
 function util.loadfile(filename)
-  f, reason = io.open(baseDir .. filename, "r")
+  f, reason = io.open(baseDir .. "/" .. filename, "r")
   if f == nil then
     return nil, reason
   end
@@ -15,7 +15,7 @@ function util.loadfile(filename)
 end
 
 function util.dumpfile(filename, data)
-  f, reason = io.open(baseDir .. filename, "w")
+  f, reason = io.open(baseDir .. "/" .. filename, "w")
   if f == nil then
     return nil, reason
   end
